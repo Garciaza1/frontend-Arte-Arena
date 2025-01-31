@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Frontend - Desafio Arte Arena
+Descrição do Projeto
+Este projeto é a interface frontend da aplicação Desafio Arte Arena, desenvolvida com Next.js. Ele visa fornecer uma plataforma interativa onde os usuários podem visualizar e interagir com o conteúdo disponibilizado no sistema.
 
-## Getting Started
+Arquitetura:
 
-First, run the development server:
+Frontend: Desenvolvido com Next.js, proporcionando renderização do lado do servidor (SSR) e renderização estática (SSG).
+API Backend: O frontend se comunica com a API backend, que fornece os dados necessários para renderizar as páginas.
+Instruções de Instalação, Configuração e Execução
+1. Clonando o Repositório
+Primeiro, clone o repositório:
 
-```bash
+bash
+Copiar
+git clone https://github.com/seuusuario/desafio-arte-arena-frontend.git
+cd desafio-arte-arena-frontend
+2. Instalando Dependências
+Instale as dependências do projeto com o comando:
+
+bash
+Copiar
+npm install
+Ou, se você estiver usando Yarn:
+
+bash
+Copiar
+yarn install
+3. Executando o Projeto Localmente
+Para rodar o projeto localmente, execute o seguinte comando:
+
+bash
+Copiar
 npm run dev
-# or
+Ou, caso esteja usando Yarn:
+
+bash
+Copiar
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Isso irá iniciar o servidor de desenvolvimento, e o frontend estará disponível em http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Configurações de Ambiente
+Verifique o arquivo .env.local para configurar variáveis de ambiente como a URL do backend, entre outras. Exemplo:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+env
+Copiar
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+Este arquivo deve conter informações sensíveis como a URL da API, tokens de autenticação, etc. Certifique-se de que as variáveis de ambiente estejam configuradas corretamente antes de rodar o projeto.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+CI/CD e Deploy no Kubernetes
+1. Configurando Pipelines de CI/CD
+Para configurar pipelines de CI/CD, podemos usar GitHub Actions, GitLab CI/CD, CircleCI, ou outras ferramentas, dependendo da sua escolha.
 
-## Learn More
+Aqui estão as etapas básicas para um pipeline simples de CI/CD:
 
-To learn more about Next.js, take a look at the following resources:
+Exemplo com GitHub Actions
+Crie um arquivo .github/workflows/ci-cd.yml no repositório com a seguinte configuração:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+yaml
+Copiar
+name: CI/CD Pipeline
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-## Deploy on Vercel
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build the project
+      run: npm run build
+
+    - name: Deploy to Kubernetes
+      run: kubectl apply -f kubernetes/deployment.yaml
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+Neste exemplo, estamos:
+
+Fazendo checkout do código.
+Instalando as dependências.
+Rodando o comando de build do Next.js (npm run build).
+Aplicando o deploy no Kubernetes com o arquivo deployment.yaml.
+2. Deploy no Kubernetes
+Para fazer o deploy no Kubernetes, siga os passos abaixo:
+
+1. Criando o Deployment do Kubernetes
+Crie o arquivo frontend-deployment.yaml:
+
+yaml
+Copiar
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: localhost/arte-arena-frontend:latest  # Nome da imagem Docker
+          ports:
+            - containerPort: 3000  # Porta que o Next.js está rodando
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80  # Porta pública
+      targetPort: 3000  # Porta do container
+  type: LoadBalancer  # Expõe o serviço externamente
+Este arquivo cria:
+
+Um Deployment com a imagem do seu frontend.
+Um Service para expor a aplicação no Kubernetes.
+2. Aplicando o Deployment no Kubernetes
+Use o comando a seguir para aplicar o arquivo YAML:
+
+bash
+Copiar
+kubectl apply -f kubernetes/frontend-deployment.yaml
+Esse comando cria o deployment do frontend no Kubernetes e expõe a aplicação na porta 80 do serviço.
+
