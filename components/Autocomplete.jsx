@@ -4,12 +4,12 @@ import { Autocomplete, TextField, Button, CircularProgress, Snackbar, Alert } fr
 import api from '../service/api';
 
 const ItemForm = () => {
-    const [options, setOptions] = useState([]); // Lista de opções
-    const [inputValue, setInputValue] = useState(''); // Valor digitado pelo usuário
-    const [loading, setLoading] = useState(false); // Estado de carregamento
-    const [openSnackbar, setOpenSnackbar] = useState(false); // Estado do Snackbar
-    const [snackbarMessage, setSnackbarMessage] = useState(''); // Mensagem do Snackbar
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Severidade do Snackbar
+    const [options, setOptions] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     // Busca os itens da API
     const fetchItems = async (search = '') => {
@@ -49,7 +49,7 @@ const ItemForm = () => {
         try {
             const response = await api.post('/items', {
                 title: inputValue,
-                body: 'Descrição padrão', // Você pode adicionar um campo para o corpo se necessário
+                body: 'bla bla bla bla lorem 1 2 3 4 5', 
             });
 
             // Atualiza a lista de opções
@@ -74,14 +74,15 @@ const ItemForm = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-4">
+        <div className="">
             <Autocomplete
+                style={{ backgroundColor: '', color: 'Highlight' }}
                 options={options}
                 getOptionLabel={(option) => option.title || ''}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {
                     setInputValue(newInputValue);
-                    fetchItems(newInputValue); // Busca itens conforme o usuário digita
+                    fetchItems(newInputValue);
                 }}
                 loading={loading}
                 renderInput={(params) => (

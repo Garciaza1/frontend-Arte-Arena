@@ -2,8 +2,8 @@ import AutoCompleteComponent from "../../components/Autocomplete";
 
 export default function Home() {
     return (
-        <div className="max-w-m mx-auto p-4">
-            <h1>Busca de Itens</h1>
+        <div className="px-40">
+            <h1 className=" font-bold text-center text-2xl py-6 text-black">Buscar Itens</h1>
             <AutoCompleteComponent />
         </div>
     );
