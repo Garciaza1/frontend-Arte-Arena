@@ -1,8 +1,8 @@
-import AutoCompleteComponent from "../../components/Autocomplete";
+import AutoCompleteComponent from "../components/Autocomplete";
 
 export default function Home() {
     return (
-        <div className="max-w-m mx-auto p-4">
+        <div className="p-10">
             <h1>Busca de Itens</h1>
             <AutoCompleteComponent />
         </div>
