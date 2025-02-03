@@ -18,7 +18,9 @@ const ItemForm = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
+  
+  // Ficou tudo em um arquivo só pois não seria tão pratico distribuir os metodos por conta do snackbar MUI. 
+  // Outros metodos estão na pasta service no bacnend do Next.js para segunrança do App.
   // Busca os itens da API
   const fetchItems = async (search = "") => {
     setLoading(true);
@@ -163,3 +165,4 @@ const ItemForm = () => {
 };
 
 export default ItemForm;
+
